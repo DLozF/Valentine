@@ -1,84 +1,137 @@
 document.addEventListener('DOMContentLoaded', () => {
     const stage = document.getElementById('heart-stage');
-    const mainHeartSvg = document.getElementById('main-heart');
-    const heartShape = document.getElementById('heart-shape');
-    const crackPath = document.getElementById('crack-path');
+    const mainHeartImg = document.getElementById('main-heart-img');
     const proposalContainer = document.getElementById('proposal-container');
+    const proposalImg = document.getElementById('proposal-img');
     const btnYes = document.getElementById('btn-yes');
     const btnNo = document.getElementById('btn-no');
+    const btnWrapper = document.getElementById('button-wrapper');
+    
+    const flowerLeft = document.getElementById('flower-left');
+    const flowerRight = document.getElementById('flower-right');
 
     let tapCount = 0;
     let noBtnScale = 1;
-
-    // Initialize state
-    heartShape.classList.add('breathing');
+    let rainInterval; // Variable to control the rain loop
 
     // --- Main Heart Interaction Logic ---
     stage.addEventListener('click', () => {
         if (tapCount === 0) {
-            // Tap 1: Stop breathing, Show crack
+            // Tap 1: Inflate and Pop!
             tapCount++;
-            heartShape.classList.remove('breathing');
-            // Slight recoil effect
-            mainHeartSvg.style.transform = "scale(0.95)";
+            
+            // 1. Remove breathing animation
+            mainHeartImg.style.animation = 'none';
+            
+            // 2. Add Inflate/Pop Class
+            mainHeartImg.classList.add('inflating');
+
+            // 3. Wait for the "POP" (0.7s matches the CSS animation)
             setTimeout(() => {
-                mainHeartSvg.style.transform = "scale(1)";
-                crackPath.style.opacity = "1"; // Show crack
-            }, 100);
+                // Hide main heart
+                mainHeartImg.style.display = 'none';
+                
+                // Explode particles (Pixel Hearts)
+                triggerBurst();
+            }, 700); 
 
         } else if (tapCount === 1) {
-            // Tap 2: Burst
-            tapCount++;
-            triggerBurst();
+            // Optional safety catch
         }
     });
 
     function triggerBurst() {
-        // Hide original heart
         stage.style.opacity = '0';
         stage.style.pointerEvents = 'none';
 
-        // Create burst particles
         const rect = stage.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
 
+        // 1. Initial Burst: Use the Pixel Heart particles
         for (let i = 0; i < 30; i++) {
-            createParticle(centerX, centerY);
+            createParticle(centerX, centerY, "pixelheartttt.png");
         }
 
-        // Fade in text and buttons after delay
+        // 2. Show Proposal & START INFINITE RAIN
         setTimeout(() => {
             proposalContainer.style.opacity = '1';
             proposalContainer.style.pointerEvents = 'auto';
+
+            // --- Trigger Infinite Rain Effect ---
+            startStickerRain();
+
         }, 1500);
     }
 
-    function createParticle(x, y) {
-        const particle = document.createElement('div');
-        particle.innerHTML = `<svg viewBox="0 0 100 100" width="30" height="30"><path d="M50 88.9C25.5 74.2 8.5 56.6 8.5 37.9C8.5 22.7 20.3 11 35.4 11C43.9 11 50 15 50 15C50 15 56.1 11 64.6 11C79.7 11 91.5 22.7 91.5 37.9C91.5 56.6 74.5 74.2 50 88.9Z" fill="#E6A6B2"/></svg>`;
+    // --- INFINITE RAIN LOGIC ---
+    function startStickerRain() {
+        // Create a new drop every 100 milliseconds (forever)
+        rainInterval = setInterval(() => {
+            createRainDrop();
+        }, 100); 
+    }
+
+    function createRainDrop() {
+        const drop = document.createElement('img');
+        drop.src = "pugsticker.png"; // Using your uploaded sticker file
+        drop.classList.add('pixel-particle'); 
+        
+        // Start Position: Random X, Top (Above Screen)
+        drop.style.position = 'absolute';
+        drop.style.left = Math.random() * 100 + 'vw';
+        drop.style.top = '-10vh'; 
+        
+        // Size
+        const size = Math.random() * 20 + 20; // 20px to 40px
+        drop.style.width = size + 'px';
+        drop.style.height = 'auto';
+        
+        // Animation Speed: Random between 2s and 5s
+        const duration = Math.random() * 3 + 2; 
+        drop.style.transition = `top ${duration}s linear, transform ${duration}s linear`;
+        
+        document.body.appendChild(drop);
+
+        // Trigger Fall
+        drop.offsetHeight; 
+
+        // End Position: Bottom (Below Screen) + Rotation
+        drop.style.top = '110vh';
+        const rotation = Math.random() * 360;
+        drop.style.transform = `rotate(${rotation}deg)`;
+
+        // Cleanup after animation ends
+        setTimeout(() => { 
+            drop.remove(); 
+        }, duration * 1000); 
+    }
+
+    // --- Standard Explosion Particle ---
+    function createParticle(x, y, imgSrc) {
+        const particle = document.createElement('img');
+        particle.src = imgSrc; 
+        particle.classList.add('pixel-particle');
+        
         particle.style.position = 'absolute';
         particle.style.left = x + 'px';
         particle.style.top = y + 'px';
-        particle.style.width = '30px';
+        particle.style.width = '30px'; 
         particle.style.height = '30px';
         particle.style.transform = 'translate(-50%, -50%)';
         particle.style.transition = 'all 1.2s cubic-bezier(0.25, 1, 0.5, 1)';
         
         document.body.appendChild(particle);
 
-        // Randomize destination
-        const destX = (Math.random() - 0.5) * window.innerWidth * 1.5;
+        const destX = (Math.random() - 0.5) * window.innerWidth * 1.5; 
         const destY = (Math.random() - 0.5) * window.innerHeight * 1.5;
         const rotation = Math.random() * 360;
 
-        // Force reflow
-        particle.offsetHeight;
+        particle.offsetHeight; 
 
         particle.style.transform = `translate(${destX}px, ${destY}px) rotate(${rotation}deg)`;
         particle.style.opacity = '0';
 
-        // Cleanup
         setTimeout(() => { particle.remove(); }, 1200);
     }
 
@@ -86,31 +139,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // YES Button
     btnYes.addEventListener('click', () => {
-        // Clear proposal
-        proposalContainer.style.transition = 'opacity 0.5s';
-        proposalContainer.style.opacity = '0';
+        // 1. Stop the Sticker Rain (Optional: Remove this line if you want rain AND hearts)
+        clearInterval(rainInterval);
+
+        // 2. Change the Image to the GIF
+        proposalImg.src = "pug1.gif"; // Using your uploaded GIF
         
-        // Start infinite hearts
+        // 3. Hide the Buttons
+        btnWrapper.style.display = 'none';
+
+        // 4. Ensure the container stays visible
+        proposalContainer.style.opacity = '1';
+        
+        // 5. Show Flowers & Final Floating Hearts
+        flowerLeft.classList.add('flowers-visible');
+        flowerRight.classList.add('flowers-visible');
+
         startFloatingHearts();
     });
 
-    // NO Button (The Runner)
+    // NO Button
     btnNo.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent bubbling issues
-        
-        // 1. Shrink
-        noBtnScale *= 0.7; // Shrink by 30% each time
+        e.stopPropagation();
+        noBtnScale *= 0.7;
         btnNo.style.transform = `scale(${noBtnScale})`;
 
-        // 2. Check if too small (effectively impossible to click)
         if (noBtnScale < 0.2) {
             btnNo.style.opacity = '0';
             btnNo.style.pointerEvents = 'none';
             return;
         }
 
-        // 3. Move to absolute random position
-        // We must switch to absolute positioning after the first click if not already
         if (btnNo.style.position !== 'absolute') {
             btnNo.style.position = 'absolute';
         }
@@ -127,12 +186,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startFloatingHearts() {
         setInterval(() => {
-            const heart = document.createElement('div');
+            const heart = document.createElement('img');
+            heart.src = "pixelheartttt.png";
             heart.classList.add('floating-heart');
-            heart.innerHTML = '❤'; // Simple unicode heart
+            
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 3 + 4) + 's'; // 4-7 seconds
-            heart.style.fontSize = (Math.random() * 20 + 20) + 'px'; // 20-40px
+            heart.style.animationDuration = (Math.random() * 3 + 4) + 's'; 
+            
+            const size = (Math.random() * 30 + 20) + 'px';
+            heart.style.width = size;
+            heart.style.height = 'auto'; 
+            
             document.body.appendChild(heart);
 
             setTimeout(() => heart.remove(), 7000);
