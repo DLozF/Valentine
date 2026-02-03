@@ -62,21 +62,19 @@ body, html {
     50% { transform: scale(1.1); }
 }
 
-/* NEW: Balloon Inflate & Pop Animation */
-/* --- NEW: Balloon Inflate Animation --- */
+/* Balloon Inflate Animation */
 @keyframes inflateBalloon {
     0% { transform: scale(1); }
-    40% { transform: scale(1.4); } /* Inflate fast */
-    60% { transform: scale(1.5) rotate(3deg); } /* Tension/Wobble */
+    40% { transform: scale(1.4); }
+    60% { transform: scale(1.5) rotate(3deg); }
     70% { transform: scale(1.6) rotate(-3deg); }
     80% { transform: scale(1.7) rotate(2deg); }
-    90% { transform: scale(1.8); opacity: 1; } /* Max size */
-    100% { transform: scale(2.0); opacity: 0; } /* POP! */
+    90% { transform: scale(1.8); opacity: 1; }
+    100% { transform: scale(2.0); opacity: 0; }
 }
 
 .inflating {
-    /* Runs for 0.7 seconds, then stops */
-    animation: inflateBalloon 0.7s ease-in forwards; 
+    animation: inflateBalloon 0.7s ease-in forwards;
 }
 
 /* --- Proposal Stage --- */
@@ -94,7 +92,7 @@ body, html {
 
 #proposal-img {
     width: 85%;
-    max-width: 750px;
+    max-width: 350px;
     height: auto;
     margin-bottom: 30px;
     display: block;
@@ -152,36 +150,48 @@ button {
     100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
 }
 
-/* --- Corner Flowers --- */
+/* --- Corner Flowers (Scaled for iPhone) --- */
 .corner-flower {
     position: absolute;
     bottom: 0;
-    width: 350px;
+    
+    /* RESPONSIVE SIZE: 40% of screen width */
+    width: 40vw; 
+    max-width: 200px; /* Don't get too huge on desktop */
+    
     height: auto;
     z-index: 15;
     transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* LEFT FLOWER: Hidden State */
+/* LEFT FLOWER */
 #flower-left {
-    left: -50px; 
+    /* Anchored to the exact corner */
+    left: 0; 
     transform-origin: bottom left;
+    
+    /* Start hidden (down) */
     transform: translateY(100%) rotate(45deg); 
 }
 
-/* RIGHT FLOWER: Hidden State */
+/* RIGHT FLOWER */
 #flower-right {
-    right: -50px;
+    /* Anchored to the exact corner */
+    right: 0;
     transform-origin: bottom right;
+    
+    /* Start hidden (down) */
     transform: translateY(100%) rotate(315deg);
 }
 
 /* --- Visible States --- */
-/* We lift them -180px to make sure the rotated corners are visible */
+/* We reduce the negative translate since the flowers are smaller now */
+
 #flower-left.flowers-visible {
-    transform: translateY(-180px) rotate(45deg) !important;
+    /* Slide up just enough (-20%) to look good */
+    transform: translateY(-20%) rotate(45deg) !important;
 }
 
 #flower-right.flowers-visible {
-    transform: translateY(-180px) rotate(315deg) !important;
+    transform: translateY(-20%) rotate(315deg) !important;
 }
