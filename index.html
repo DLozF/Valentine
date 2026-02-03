@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Valentine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="app-container">
+        <div id="heart-stage">
+            <svg id="main-heart" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path id="heart-shape" d="M50 88.9C25.5 74.2 8.5 56.6 8.5 37.9C8.5 22.7 20.3 11 35.4 11C43.9 11 50 15 50 15C50 15 56.1 11 64.6 11C79.7 11 91.5 22.7 91.5 37.9C91.5 56.6 74.5 74.2 50 88.9Z" fill="#E6A6B2"/>
+                <path id="crack-path" d="M50 15 L45 30 L55 45 L48 60 L52 75" stroke="#F6EFEA" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0;"/>
+            </svg>
+        </div>
+
+        <div id="proposal-container">
+            <h1 id="proposal-text">Will you be my Valentine?</h1>
+            
+            <div id="button-wrapper">
+                <button id="btn-yes">Yes</button>
+                <button id="btn-no">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
